@@ -1,0 +1,65 @@
+from http import client
+from operator import truediv
+from pickle import FALSE
+import random
+import discord
+from discord.ext import commands
+
+bot = commands.Bot(command_prefix="r!")
+
+
+client = discord.Client()
+
+
+@bot.event
+async def on_ready():
+    print(f"BotStart!  LoginUser {bot.user}!")
+    await bot.change_presence(activity=discord.Game(name=" "))
+
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith('你好'):
+        await message.channel.send('Hello')
+
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith('ボンジュール'):
+        await message.channel.send('こんにちは')
+
+@bot.command()
+async def serverinfo(ctx):
+    guild = ctx.message.guild
+    roles =[role for role in guild.roles]
+    text_channels = [text_channels for text_channels in guild.text_channels]
+    embed = discord.Embed(title=f"ServerInfo - {guild.name}", timestamp=ctx.message.created_at, color=discord.Colour.purple())
+    embed.set_thumbnail(url=ctx.guild.icon_url)
+    embed.add_field(name="地域", value=f"{ctx.guild.region}", inline=False)
+    embed.add.field(name="チャンネル数", value=f"{len(text_channels)}", inline=False)
+    embed.add.field(name="サーバーブースター", value=guild.premium_subscription_count, inline=False)
+    embed.add.field(name="メンバー数", value=guild.member_count, inline=False)
+    embed.add.field(name="サーバー設立日", value=guild.created_at, inline=False)
+    embed.set_footer(text=f"実行者:{ctx.author} ", icon_url=ctx.author.avatar_url)
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def down(ctx):
+    id = str(ctx.author.id)
+    if id == '':
+        await ctx.send('正常にシャットダウンされました。自動再起動が無効です。手動で起動してください')
+        await ctx.bot.logout()
+    else:
+        await ctx.send("権限がありません。間違えだと思われる場合は管理者に連絡してください")
+
+
+
+
+bot.run("TOKEN")
